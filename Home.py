@@ -25,7 +25,7 @@ def load_data(file):
     if 'STATUS' in df.columns:
         df['STATUS'] = df['STATUS'].fillna('NENHUM')
         df['Filial'] = df['Filial'].astype(str)
-        df['Numero_da_NF'] = df['Numero_da_NF'].astype(float)
+        df['Numero_da_NF'] = df['Numero_da_NF'].astype(str)
     return df
 
 def convert_to_excel(df):
