@@ -3,11 +3,14 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-from scripts.data import filter_data
+from scripts.components import footer
+from scripts.data import session_vars
+from scripts.filters import display_filters
 
 # Configurações de página
 st.set_page_config(page_title="Home", page_icon="📂")
 st.title("W.O.B.I")
+session_vars()
 
 # Funções
 @st.cache_data
@@ -21,6 +24,8 @@ def load_data(file):
         df = pd.read_excel(file)
     if 'STATUS' in df.columns:
         df['STATUS'] = df['STATUS'].fillna('NENHUM')
+        df['Filial'] = df['Filial'].astype(str)
+        df['Numero_da_NF'] = df['Numero_da_NF'].astype(float)
     return df
 
 def convert_to_excel(df):
@@ -45,7 +50,6 @@ uploaded_file = st.file_uploader("Carregue um arquivo Excel (.csv, .xlsx ou .xls
 # Verificar se o arquivo foi carregado
 if uploaded_file:
     try:
-        # Carregar os dados e salvar no session_state
         df = load_data(uploaded_file)
         st.session_state.data = df
         st.success("Arquivo carregado com sucesso!")
@@ -58,20 +62,15 @@ if uploaded_file:
 if ("data" in st.session_state) and (st.session_state.data is not None):
     df = st.session_state.data
 
-    # Exibir pré-visualização dos dados
-    st.write('## Pré-visualização dos dados:')
+    # display_filters(df, df.columns)
 
-    # coluna_filtro = st.sidebar.selectbox(
-    #     "Selecione a coluna para filtrar:",
-    #     options=df.columns,
-    #     )
-    # valor_filtro = st.sidebar.selectbox(
-    #     "Qual valor para adicionar ao filtro:",
-    #     options=df[coluna_filtro].unique(),
-    # )
-    # df = df[df[coluna_filtro] == valor_filtro]
-    # st.session_state.data = df
-    st.dataframe(df)
+    # Exibir dados filtrados
+    if st.session_state.filtered_data is not None:
+        st.subheader("Dados Filtrados")
+        st.dataframe(st.session_state.filtered_data)
+    else:
+        st.subheader("Exibindo Dados Originais")
+        st.dataframe(df)
     
     # Botões de exportação
     st.markdown("### Exportar Dados:")
@@ -92,3 +91,5 @@ if ("data" in st.session_state) and (st.session_state.data is not None):
         )
 else:
     st.info("Por favor, carregue um arquivo Excel para começar.")
+
+footer()

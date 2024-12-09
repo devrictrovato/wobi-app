@@ -1,10 +1,13 @@
+import warnings
+warnings.simplefilter(action="ignore")
+
 import streamlit as st
 
 def format_cnpj(cnpj):
     """Formatar CNPJ em um padrão legível."""
     return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
 
-def display_nf_details(nf_info, format_cnpj_func):
+def display_nf_details(nf_info):
     """Exibir detalhes da nota fiscal em formato de tabela estilizada."""
     st.sidebar.divider()
     st.sidebar.markdown("### Informações da Nota Fiscal")
@@ -22,7 +25,7 @@ def display_nf_details(nf_info, format_cnpj_func):
             </tr>
             <tr>
                 <td style="font-weight: bold;">CNPJ:</td>
-                <td style="color: white;">{format_cnpj_func(nf_info['CNPJ'].astype(str))}</td>
+                <td style="color: white;">{format_cnpj(nf_info['CNPJ'].astype(str))}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Filial:</td>
