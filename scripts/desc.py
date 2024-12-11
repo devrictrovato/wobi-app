@@ -21,35 +21,35 @@ def display_nf_details(nf_info):
         <table style="width:100%; font-size: 18px; border-collapse: collapse;">
             <tr>
                 <td style="font-weight: bold;">Loja:</td>
-                <td style="color: white;">{nf_info['Local de Atendimento Descrição']}</td>
+                <td>{nf_info['Local de Atendimento Descrição']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">CNPJ:</td>
-                <td style="color: white;">{format_cnpj(nf_info['CNPJ'].astype(str))}</td>
+                <td>{format_cnpj(nf_info['CNPJ'].astype(str))}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Filial:</td>
-                <td style="color: white;">{nf_info['Filial']}</td>
+                <td>{nf_info['Filial']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Data da Venda:</td>
-                <td style="color: white;">{nf_info['Data_da_venda']}</td>
+                <td>{nf_info['Data_da_venda']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Nº da NF:</td>
-                <td style="color: white;">{nf_info['Numero_da_NF']}</td>
+                <td>{nf_info['Numero_da_NF']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Itens Descrição:</td>
-                <td style="color: white;">{nf_info['Itens Descrição']}</td>
+                <td>{nf_info['Itens Descrição']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Quantidade da Venda:</td>
-                <td style="color: white;">{nf_info['Quantidade_venda']}</td>
+                <td>{nf_info['Quantidade_venda']}</td>
             </tr>
             <tr>
                 <td style="font-weight: bold;">Preço Unitário:</td>
-                <td style="color: white;">R$ {nf_info['Preco_unitario_da_venda']:.2f}</td>
+                <td>R$ {nf_info['Preco_unitario_da_venda']:.2f}</td>
             </tr>
         </table>
         """,
