@@ -1,8 +1,8 @@
 import streamlit as st
 
 from scripts.data import convert_to_csv, convert_to_excel
-from scripts.events import set_duplicates, set_image_index, set_status
-from scripts.images import load_image, rotate_image
+from scripts.events import clear_cache, set_duplicates, set_image_index, set_status, set_wrong_date
+from scripts.components.images import load_image, rotate_image
 
 def nf_explain():
     # Subtítulo
@@ -32,15 +32,18 @@ def nf_explain():
     st.divider()
 
 def nf_show(df):
+
+    with st.expander('Opções extras'):
+        col1, col2, col3 = st.columns(3)
+        with col1: nf_duplicates(st.session_state.data)
+        with col2: nf_wrong_date(st.session_state.data)
+        with col3: nf_clear_cache()
     # Exibir dados filtrados
-    if st.session_state.filtered_data is not None:
-        st.subheader("Dados Filtrados")
-        st.dataframe(st.session_state.filtered_data)
-    else:
-        st.subheader("Exibindo Dados")
-        st.dataframe(st.session_state.filtered_data)
-    with st.expander('Opções auxiliares'):
-        nf_duplicates(df)
+    st.subheader("Exibindo Dados Originais (Importados/Exportados)")
+    st.dataframe(st.session_state.data)
+
+    st.subheader("Dados Filtrados (Opicional)")
+    st.dataframe(st.session_state.filtered_data)
 
 def nf_links(images):
     # Campo numérico para selecionar a imagem pelo índice
@@ -86,11 +89,23 @@ def nf_status(df, image_index, current_status):
 
 def nf_duplicates(df):
     # Botões auxiliares
-    if st.button("🚀 Marcar Duplicatas"):
+    if st.button("🚀 Duplicatas", disabled=False):
         with st.spinner("Processando..."):
-            df = set_duplicates(df)
+            set_duplicates(df, 'Duplicidade')
             st.success("Duplicidades Marcadas!")
     # st.dataframe(df[df.duplicated(subset=['Duplicidade'], keep='first')])
+
+def nf_wrong_date(df):
+    if st.button('📅 Datas Divergentes', disabled=False):
+        with st.spinner("Processando..."):
+            set_wrong_date(df, 'Data_da_venda')
+            st.success("Datas Divergentes Marcadas!")
+
+def nf_clear_cache():
+    if st.button('♻️ Limpar Cache', disabled=False):
+        with st.spinner("Processando..."):
+            clear_cache()
+            st.success("Cache Liberado!")
 
 def exports(df):
     # Botões de exportação

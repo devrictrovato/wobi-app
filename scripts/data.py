@@ -30,6 +30,7 @@ def load_data(file):
         df['STATUS'] = df['STATUS'].fillna('PENDENTE')
         df['Filial'] = df['Filial'].astype(str)
         df['Numero_da_NF'] = df['Numero_da_NF'].astype(str)
+        df['Data_da_venda'] = pd.to_datetime(df['Data_da_venda'])
         df['Duplicidade'] = df['CNPJ'].astype(str) + df['Itens Descrição'].astype(str) + df['Numero_da_NF'].astype(str)
     return df
 

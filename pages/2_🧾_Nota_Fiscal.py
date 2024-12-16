@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 
 from scripts.components.builders import footer, nf_links, nf_photo, nf_status
-from scripts.desc import display_nf_details
+from scripts.components.desc import display_nf_details
 from scripts.events import get_current_status
 
 # Configuração de Página

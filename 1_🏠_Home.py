@@ -6,7 +6,7 @@ from scripts.data import load_data, session_vars
 from scripts.components.filters import display_filters
 
 # Configurações de página
-st.set_page_config(page_title="Home", page_icon="📂")
+st.set_page_config(page_title="W.O.B.I", page_icon="🏠")
 st.title("⚡ W.O.B.I ⚡")
 session_vars()
 nf_explain()
