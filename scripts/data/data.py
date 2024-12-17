@@ -16,6 +16,8 @@ def session_vars():
         st.session_state.rotation_angle = 0
     if "finished" not in st.session_state:
         st.session_state.finished = 0
+    if 'filters' not in st.session_state:
+        st.session_state.filters = {}
 
 @st.cache_data
 def load_data(file):

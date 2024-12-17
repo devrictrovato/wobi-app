@@ -1,6 +1,7 @@
 import streamlit as st
+import streamlit_image_zoom
 
-from scripts.data import convert_to_csv, convert_to_excel
+from scripts.data.data import convert_to_csv, convert_to_excel
 from scripts.events import clear_cache, set_duplicates, set_image_index, set_status, set_wrong_date
 from scripts.components.images import load_image, rotate_image
 
@@ -32,7 +33,6 @@ def nf_explain():
     st.divider()
 
 def nf_show(df):
-
     with st.expander('Opções extras'):
         col1, col2, col3 = st.columns(3)
         with col1: nf_duplicates(st.session_state.data)
@@ -58,14 +58,39 @@ def nf_links(images):
     )
 
 def nf_photo(current_image, image_paths):
-    # Carregar a imagem atual
+        # Carregar a imagem atual
     foto_imagem = load_image(current_image)
-    foto_atual = st.image(
-        foto_imagem,
-        caption=f"Foto {st.session_state.image_index + 1} / {len(image_paths)}",
-        # width=1000,
-        use_container_width=True,
-    )
+    
+    # foto_atual = st.image(
+    #     foto_imagem,
+    #     caption=f"Foto {st.session_state.image_index + 1} / {len(image_paths)}",
+    #     # width=1000,
+    #     use_container_width=True,
+    # )
+    # Exibir a imagem com zoom e manter o aspecto
+    with st.container():
+        # Dimensões ajustadas dinamicamente para o zoom
+        zoom_width =  max(800, int(foto_imagem.width * .4))
+        zoom_height = max(800, int(foto_imagem.height * .4))
+        
+        foto_atual = streamlit_image_zoom.image_zoom(
+            foto_imagem,
+            zoom_factor=3,
+            keep_aspect_ratio=True,
+            keep_resolution=True,
+            size=(zoom_width, zoom_height),
+        )
+
+    # Desenvolver o caption para apresentar X/XX de imagens
+    image_index = st.session_state.get("image_index", 0) + 1
+    total_images = len(image_paths)
+    caption_text = f"Foto {image_index} / {total_images}"
+
+    # Mostrar o caption abaixo da imagem
+
+    st.caption(f'<div style="margin-bottom: 25px; text-align: center;">{caption_text}</div>', unsafe_allow_html=True)
+
+    # Realizar rotação da imagem se necessário
     rotate_image(foto_atual, foto_imagem)
 
 def nf_status(df, image_index, current_status):

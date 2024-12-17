@@ -2,8 +2,9 @@
 import streamlit as st
 
 from scripts.components.builders import exports, footer, nf_explain, nf_show
-from scripts.data import load_data, session_vars
+from scripts.data.data import load_data, session_vars
 from scripts.components.filters import display_filters
+from scripts.events import clear_cache
 
 # Configurações de página
 st.set_page_config(page_title="W.O.B.I", page_icon="🏠")
@@ -20,6 +21,7 @@ if uploaded_file:
         df = load_data(uploaded_file)
         st.session_state.data = df
         st.session_state.filtered_data = df.copy()
+        clear_cache()
         st.success("Arquivo carregado com sucesso!")
     except ValueError as e:
         st.error(f"Erro no formato do arquivo: {e}")

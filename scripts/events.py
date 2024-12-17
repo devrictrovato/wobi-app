@@ -31,6 +31,10 @@ def set_image_index():
     # Atualiza o índice da imagem no session_state
     st.session_state.image_index = st.session_state.temp_image_index
     st.session_state.rotation_angle = 0
+    if st.session_state.image_index > st.session_state.filtered_data.shape[0] - 1:
+        st.session_state.image_index = st.session_state.filtered_data.shape[0] - 1
+        st.session_state.finished = True
+        st.success('⭐ Você chegou ao fim dessa validação!')
 
 def set_next_image_index(df, image_index, plus):
     st.session_state.temp_image_index = image_index
