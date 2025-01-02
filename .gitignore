@@ -279,5 +279,9 @@ frontend/cypress/snapshots/linux/1x
 !.vscode/extensions.json
 !.vscode/launch.json
 
+# Personal configs and scripts
 .swc/
 updates.txt
+config.yaml
+db.py
+queries.py

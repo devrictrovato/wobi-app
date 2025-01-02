@@ -3,17 +3,19 @@ import streamlit as st
 import pandas as pd
 
 from scripts.components.builders import footer, nf_links, nf_photo, nf_status
-from scripts.components.desc import display_nf_details
+from scripts.components.desc import display_nf_details, display_nf_ids
+from scripts.data.data import session_vars
 from scripts.events import get_current_status
 
 # Configuração de Página
 st.set_page_config(
     page_title="Nota Fiscal", page_icon="🧾", layout='wide',
 )
+session_vars()
 
 # tipo_base = st.sidebar.selectbox('Selecione os dados:', ['Todos', 'Duplicidade'])
 
-df = st.session_state.filtered_data
+df = st.session_state.filtred_data
 
 if st.session_state.finished:
     st.balloons()
@@ -45,6 +47,9 @@ if df is not None:
 
             # Exibir Informações da NF
             display_nf_details(df.iloc[st.session_state.image_index])
+
+            # Exibir codigos do carrefour
+            display_nf_ids()
 
             # Atualizar o status da imagem atual no selectbox
             current_status = get_current_status(df, st.session_state.image_index)

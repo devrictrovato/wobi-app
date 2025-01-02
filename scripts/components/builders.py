@@ -1,8 +1,12 @@
 import streamlit as st
 import streamlit_image_zoom
+import streamlit_authenticator as stauth
+
+import yaml
+from yaml.loader import SafeLoader
 
 from scripts.data.data import convert_to_csv, convert_to_excel
-from scripts.events import clear_cache, set_duplicates, set_image_index, set_status, set_wrong_date
+from scripts.events import clear_filters, set_duplicates, set_image_index, set_no_link, set_status, set_wrong_date
 from scripts.components.images import load_image, rotate_image
 
 def nf_explain():
@@ -32,18 +36,19 @@ def nf_explain():
         st.pills('Configuração (considere as letras maiúsculas e minúsculas e caracteres especiais)', data_columns, disabled=True)
     st.divider()
 
-def nf_show(df):
+def nf_show():
     with st.expander('Opções extras'):
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4, vertical_alignment='center')
         with col1: nf_duplicates(st.session_state.data)
         with col2: nf_wrong_date(st.session_state.data)
-        with col3: nf_clear_cache()
+        with col3: nf_no_media(st.session_state.data)
+        with col4: nf_clear_cache()
     # Exibir dados filtrados
     st.subheader("Exibindo Dados Originais (Importados/Exportados)")
-    st.dataframe(st.session_state.data)
+    st.dataframe(st.session_state.data.drop(columns=['Mes_da_venda', 'Duplicidade']))
 
     st.subheader("Dados Filtrados (Opicional)")
-    st.dataframe(st.session_state.filtered_data)
+    st.dataframe(st.session_state.filtred_data.drop(columns=['Mes_da_venda', 'Duplicidade']))
 
 def nf_links(images):
     # Campo numérico para selecionar a imagem pelo índice
@@ -121,35 +126,71 @@ def nf_duplicates(df):
     # st.dataframe(df[df.duplicated(subset=['Duplicidade'], keep='first')])
 
 def nf_wrong_date(df):
-    if st.button('📅 Datas Divergentes', disabled=False):
+    if st.button('📅 Datas', disabled=False):
         with st.spinner("Processando..."):
             set_wrong_date(df, 'Data_da_venda')
             st.success("Datas Divergentes Marcadas!")
 
+def nf_no_media(df):
+    if st.button('🔗 NoMedia', disabled=False):
+        with st.spinner("Processando..."):
+            set_no_link(df)
+            st.success("NoMedia Marcados!")
+
 def nf_clear_cache():
     if st.button('♻️ Limpar Cache', disabled=False):
         with st.spinner("Processando..."):
-            clear_cache()
+            clear_filters()
             st.success("Cache Liberado!")
 
-def exports(df):
+def exports():
     # Botões de exportação
     st.markdown("### Exportar Dados:")
     col1, col2 = st.columns(2)
     with col1:
         st.download_button(
             label="⬇️ Exportar para Excel",
-            data=convert_to_excel(df),
+            data=convert_to_excel(st.session_state.data),
             file_name="CHECKPOINT.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     with col2:
         st.download_button(
             label="⬇️ Exportar para CSV",
-            data=convert_to_csv(df),
+            data=convert_to_csv(st.session_state.data),
             file_name="CHECKPOINT.csv",
             mime="text/csv"
         )
+
+def login():
+    with open('config.yaml') as file:
+        config = yaml.load(file, Loader=SafeLoader)
+
+    stauth.Hasher.hash_passwords(config['credentials'])
+
+    authenticator = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+    )
+
+    try:
+        authenticator.login()
+    except Exception as e:
+        st.error(e)
+
+    if st.session_state['authentication_status']:
+        col1, col2 = st.columns(2, vertical_alignment='center')
+        with col1: st.write(f'### 💻 *{st.session_state["name"]}*')
+        with col2: authenticator.logout()
+        return True
+    elif st.session_state['authentication_status'] is False:
+        st.error('Username/password is incorrect')
+    elif st.session_state['authentication_status'] is None:
+        st.warning('Please enter your username and password')
+
+    return False
 
 def footer():
     footer = """
