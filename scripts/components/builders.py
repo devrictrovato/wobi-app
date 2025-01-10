@@ -77,6 +77,7 @@ def photo(current_image, image_paths):
 
         foto_atual = image_zoom(foto_imagem, zoom_factor=3, size=(800, 800))
         # st.caption(caption_text)
+        # TODO: A
     else:
         foto_atual = st.image(foto_imagem, caption=caption_text, use_container_width=True,)
 
