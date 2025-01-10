@@ -2,14 +2,14 @@
 import streamlit as st
 import pandas as pd
 
-from scripts.components.builders import display_note, image_index_input, photo
-from scripts.components.desc import display_nf_details, display_nf_ids
+from scripts.components.builders import display_note, photo, image_index_input
+from scripts.components.desc import display_cr_details
 from scripts.data.data import session_vars
-from scripts.events import get_current_status, set_status
+from scripts.events import get_current_errors, set_erros
 from scripts.utils import footer
 
 # Configuração da página
-st.set_page_config(page_title="Nota Fiscal", page_icon="🧾", layout='wide')
+st.set_page_config(page_title="Coleta Regular", page_icon="📦", layout='wide')
 session_vars()
 
 # Obter dados filtrados da sessão
@@ -23,10 +23,10 @@ if st.session_state.finished:
     st.balloons()
     st.session_state.finished = False
 
-# Verificar se há dados válidos e se o tipo de dado é 'NF'
-if (df is not None) and (not df.empty) and (st.session_state.type_data == 'NF'):
-    # Filtro de Foto da Nota Fiscal
-    links = ["Foto_da_NF", "Foto_da_NF_2", "Foto_da_NF_3"]
+# Verificar se há dados válidos e se o tipo de dado é 'CR'
+if (df is not None) and (not df.empty) and (st.session_state.type_data == 'CR'):
+    # Filtro de Foto da Coleta Regular
+    links = ["foto_etiqueta"]
     foto_coluna = st.sidebar.selectbox("Selecione uma Foto:", links)
     image_paths = df[foto_coluna].to_list()  # Filtra valores não nulos
 
@@ -43,22 +43,20 @@ if (df is not None) and (not df.empty) and (st.session_state.type_data == 'NF'):
         else:
             # Exibir a foto atual e informações
             photo(current_image, image_paths)
-            display_nf_details(df.iloc[st.session_state.image_index])
-            display_nf_ids()
+            display_cr_details(df.iloc[st.session_state.image_index])
 
-            # Obter e exibir o status atual da foto
-            current_status = get_current_status(df, st.session_state.image_index)
+            # Obter e exibir os erros atuais da foto
+            current_errors = get_current_errors(df, st.session_state.image_index)
             options = [
-                'PENDENTE', 'APROVADO', 
-                'VALOR DIVERGENTE', 'DUPLICIDADE', 
-                'AUSENCIA DE DADOS', 'NUMERO DA NF DIVERGENTE', 
-                'SKU DIVERGENTE', 'DATA DIVERGENTE', 
-                'FILIAL DIVERGENTE', 'QUANTIDADE DIVERGENTE', 
-                'ILEGÍVEL', 'SEM LINK'
+                'PENDENTE', 'SEM ERRO', 'ALERTA - FOTO ILEGÍVEL', 
+                'ALERTA - NÚMERO DE EXPOSIÇÃO ZERADO',
+                'ALERTA - PRODUTOS EXPOSTOS EM EXCESSO', 
+                'VALIDADO - MODELO DA ETIQUETA DIFERENTE DO INPUTADO',
+                'VALIDADO - PREÇO INCORRETO',
             ]
             display_note(
-                df, 'Status', st.session_state.image_index, current_status,
-                sorted(options), 'status', set_status
+                df, 'Erro', st.session_state.image_index, current_errors,
+                sorted(options), 'errors', set_erros
             )
     else:
         st.error("Nenhuma foto encontrada!")
