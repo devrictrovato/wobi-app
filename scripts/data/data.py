@@ -74,7 +74,7 @@ def process_nf_data(df):
         df['STATUS'] = None
     df['STATUS'] = df['STATUS'].fillna('PENDENTE')
     df['Data_da_venda'] = pd.to_datetime(df.get('Data_da_venda'), errors='coerce', format='%d/%m/%y')
-    df['Mes_da_venda'] = df['Data_da_venda'].dt.month_name(locale='pt_BR')
+    df['Mes_da_venda'] = df['Data_da_venda'].dt.month_name()
     
     month_map = {
         'January': 'Janeiro', 'February': 'Fevereiro', 'March': 'Março',
