@@ -37,7 +37,7 @@ def load_data(file):
             chunks = pd.read_csv(file, sep=';', skiprows=1, low_memory=False, chunksize=10000)
             df = pd.concat(chunks, ignore_index=True)  # Concatena os chunks em um único DataFrame
         else:
-            df = pd.read_excel(file, engine='openpyxl', converters=False)
+            df = pd.read_excel(file, engine='openpyxl')
     except Exception as e:
         st.error(f"Erro ao carregar o arquivo: {e}")
         return None
