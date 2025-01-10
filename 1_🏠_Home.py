@@ -50,7 +50,6 @@ if wobi_acess:
         except ValueError as e:
             st.error(f"Erro no formato do arquivo: {e}")
         except Exception as e:
-            raise e
             st.error(f"Erro inesperado: {e}")
 
     # Verifica se há dados carregados
