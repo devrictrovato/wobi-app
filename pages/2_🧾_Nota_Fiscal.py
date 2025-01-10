@@ -24,7 +24,7 @@ if st.session_state.finished:
     st.session_state.finished = False
 
 # Verificar se há dados válidos e se o tipo de dado é 'NF'
-if (df is not None) and (not df.empty) and (st.session_state.type_data == 'NF'):
+if (df is not None) and (st.session_state.type_data == 'NF'):
     # Filtro de Foto da Nota Fiscal
     links = ["Foto_da_NF", "Foto_da_NF_2", "Foto_da_NF_3"]
     foto_coluna = st.sidebar.selectbox("Selecione uma Foto:", links)
