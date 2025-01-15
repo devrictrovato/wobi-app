@@ -9,6 +9,7 @@ warnings.simplefilter(action="ignore")
 # Função para formatar CNPJ
 def format_cnpj(cnpj):
     """Formatar CNPJ em um padrão legível."""
+    cnpj = str(cnpj)
     return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
 
 # Função para exibir detalhes da Nota Fiscal
@@ -67,12 +68,12 @@ def display_nf_ids():
     skus = [
         "43S615", "32S615", "32S5400AF", "43S5400A", "65P635", 
         "50P635", "55P635", "65P735", "50C655", "55C655", 
-        "50P755", "55P755", "65P755"
+        "50P755", "55P755", "65P755", "75P755"
     ]
     ids_crfo = [
         '6606229', '6566057', '3194108', '3194094', '3222721', 
         '5393264', '5393248', '6942350', '3439038', '3438996', 
-        '3438945', '3439020', '3439089',
+        '3438945', '3439020', '3439089', '3438880',
     ]
 
     df_skus = DataFrame({'SKU': skus, 'Código do Produto': ids_crfo})

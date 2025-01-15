@@ -3,6 +3,7 @@ import streamlit as st
 import warnings
 
 # Importações locais
+from scripts.acess import login
 from scripts.components.builders import extra_options, nf_explain, show_df
 from scripts.data.data import load_data, session_vars
 from scripts.components.filters import define_type_data, display_filters
@@ -16,9 +17,6 @@ warnings.filterwarnings("ignore")
 st.set_page_config(page_title="W.O.B.I", page_icon="🏠")
 st.title("⚡ W.O.B.I ⚡")
 
-# Inicializa variáveis de sessão
-session_vars()
-
 # Simula o login (essa linha pode ser modificada para implementar o login real)
 wobi_acess = True
 file_loaded = False
@@ -26,6 +24,7 @@ file_loaded = False
 
 # Verifica acesso do usuário
 if wobi_acess:
+    session_vars() # Inicializa variáveis de sessão
     nf_explain()  # Explicação sobre o sistema
 
     # Interface para upload do arquivo
@@ -50,7 +49,6 @@ if wobi_acess:
         except ValueError as e:
             st.error(f"Erro no formato do arquivo: {e}")
         except Exception as e:
-            raise e
             st.error(f"Erro inesperado: {e}")
 
     # Verifica se há dados carregados

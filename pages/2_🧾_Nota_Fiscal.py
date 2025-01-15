@@ -30,6 +30,9 @@ if (df is not None) and (st.session_state.type_data == 'NF'):
     foto_coluna = st.sidebar.selectbox("Selecione uma Foto:", links)
     image_paths = df[foto_coluna].to_list()  # Filtra valores não nulos
 
+    if st.session_state.image_index > len(image_paths):
+        st.session_state.image_index = 0
+
     # Exibição das fotos, se existirem
     if image_paths:
         # Exibir as fotos disponíveis
@@ -52,7 +55,7 @@ if (df is not None) and (st.session_state.type_data == 'NF'):
                 'PENDENTE', 'APROVADO', 
                 'VALOR DIVERGENTE', 'DUPLICIDADE', 
                 'AUSENCIA DE DADOS', 'NUMERO DA NF DIVERGENTE', 
-                'SKU DIVERGENTE', 'DATA DIVERGENTE', 
+                'SKU DIVERGENTE', 'DATA DIVERGENTE',
                 'FILIAL DIVERGENTE', 'QUANTIDADE DIVERGENTE', 
                 'ILEGÍVEL', 'SEM LINK'
             ]

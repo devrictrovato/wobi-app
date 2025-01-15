@@ -26,7 +26,8 @@ def login():
 
     if st.session_state['authentication_status']:
         col1, col2 = st.columns(2, vertical_alignment='center')
-        with col1: st.write(f'### 💻 *{st.session_state["name"]}*')
+        st.session_state["name"] = st.session_state["name"].split(' ')[0]
+        with col1: st.write(f'### 🔑 *{st.session_state["name"]}*')
         with col2: authenticator.logout(callback=clear_cache)
         return True
     elif st.session_state['authentication_status'] is False:

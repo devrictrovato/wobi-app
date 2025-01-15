@@ -35,15 +35,15 @@ def set_erros(df, image_index, new_error):
 # Funções para condições específicas
 def set_duplicates(df, duplicate_column):
     # Cria uma máscara para identificar duplicatas
-    duplicated_mask = df.duplicated(subset=[duplicate_column], keep=False)
+    duplicated_mask = df.duplicated(subset=[duplicate_column], keep='first')
 
-    # Filtra as primeiras ocorrências das duplicatas
-    first_occurrences = df[duplicated_mask & ~df.duplicated(subset=[duplicate_column], keep='first')]
-
-    # Marca duplicatas no DataFrame original
+    # Marca todas as ocorrências de duplicatas no DataFrame original
     df.loc[duplicated_mask, 'STATUS'] = 'DUPLICIDADE'
+    st.session_state.data.loc[duplicated_mask, 'STATUS'] = 'DUPLICIDADE'
 
-    return first_occurrences
+    # Retorna a última ocorrência de duplicatas
+    last_occurrences_mask = df.duplicated(subset=[duplicate_column], keep='last')
+    return df.loc[last_occurrences_mask]
 
 def set_wrong_date(df, date_column):
     """Marca registros com data divergente."""

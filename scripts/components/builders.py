@@ -75,7 +75,7 @@ def photo(current_image, image_paths):
     if st.session_state.toggle_zoom:
         from streamlit_image_zoom import image_zoom
 
-        foto_atual = image_zoom(foto_imagem, zoom_factor=3, size=(800, 800))
+        foto_atual = image_zoom(foto_imagem, mode='both', zoom_factor=8, size=(800, 800))
         # st.caption(caption_text)
     else:
         foto_atual = st.image(foto_imagem, caption=caption_text, use_container_width=True,)
