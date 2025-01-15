@@ -43,7 +43,6 @@ def display_filters(df: pd.DataFrame):
             df = cr_filter(df)
     except Exception as e:
         st.error(f'Erro na filtragem de dados! (Tente outro filtro)')
-        raise e
         print(e)
         clear_filters()
 
