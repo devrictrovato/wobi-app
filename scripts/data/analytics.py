@@ -7,5 +7,4 @@ def cr_val_alert(preco, moda):
         return r"30% acima da moda"
     elif preco < limite_inferior:
         return r"30% abaixo da moda"
-    else:
-        return r"Dentro da faixa"
+    return r"Dentro da faixa"

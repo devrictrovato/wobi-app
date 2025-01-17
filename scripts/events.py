@@ -29,6 +29,7 @@ def set_status(df, image_index, new_status):
 def set_erros(df, image_index, new_error):
     """Atualiza o ERRO da nota fiscal."""
     update_column(df, image_index, 'ERRO', new_error)
+    # update_column(df, image_index, 'CORREÇÃO', st.session_state["correct_price"])
     update_column(df, image_index, 'Quem Validou?', st.session_state["name"])
     set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'ERRO')
 

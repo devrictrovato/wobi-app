@@ -43,29 +43,30 @@ def display_filters(df: pd.DataFrame):
             df = cr_filter(df)
     except Exception as e:
         st.error(f'Erro na filtragem de dados! (Tente outro filtro)')
+        raise e
         print(e)
         clear_filters()
 
 # Função de filtro para Coleta Regular
 def cr_filter(df):
-    df = filter_by_date(df, 'data')
+    df = filter_by_date(df, 'Data Hora Tarefa')
     df = filter_by_multiselect(df, {
-        'nome_promotor': 'Selecione os Promotores',
-        'e_supervisor': 'Selecione os Supervisores',
-        'bandeira': 'Selecione as Bandeiras',
-        'nome_loja': 'Selecione as Lojas',
-        'regiao': 'Selecione as Regiões',
-        'marca': 'Selecione as Marcas',
-        'tecnologia': 'Selecione as Tecnologias',
+        'Pessoa Nome': 'Selecione os Promotores',
+        'Itens Descrição': 'Selecione os SKUs',
+        # 'PREÇO MODA': 'Selecione o Preço Moda',
+        # 'nome_loja': 'Selecione as Lojas',
+        # 'regiao': 'Selecione as Regiões',
+        # 'marca': 'Selecione as Marcas',
+        # 'tecnologia': 'Selecione as Tecnologias',
         'ALERTAS DE VALIDAÇÃO': 'Selecione os Alertas de Validação',
     })
 
-    df = boxplot_df(df, ['marca', 'tecnologia', 'sku'], ['mean', 'std'])
+    # df = boxplot_df(df, ['marca', 'tecnologia', 'sku'], ['mean', 'std'])
     df = filter_range(df)
-    df = filter_outliers(df, 'preço')
+    df = filter_outliers(df, 'Qual_o_preco_deste_produto')
     df = filter_ends_with(df)
-    df = filter_by_slider(df, 'qtd_exposta', 'Selecione o intervalo de Quantidade Exposta')
-    df = filter_by_slider(df, 'preço', 'Selecione o intervalo de Preço')
+    # df = filter_by_slider(df, 'qtd_exposta', 'Selecione o intervalo de Quantidade Exposta')
+    df = filter_by_slider(df, 'Qual_o_preco_deste_produto', 'Selecione o intervalo de Preço')
 
     st.session_state.filtred_data = df
     return df
@@ -107,16 +108,19 @@ def filter_by_date(df, column):
 # Função genérica para filtro por múltiplos valores (multiselect)
 def filter_by_multiselect(df, columns):
     for coluna, label in columns.items():
-        valores_unicos = sorted(df[coluna].dropna().unique())
-        valores_selecionados = st.sidebar.multiselect(
-            label,
-            valores_unicos,
-            default=st.session_state.filters.get(coluna, []),
-            key=coluna
-        )
-        save_filter_state(coluna, valores_selecionados)
-        if valores_selecionados:
-            df = df[df[coluna].isin(valores_selecionados)]
+        if coluna in df.columns:
+            valores_unicos = sorted(df[coluna].dropna().unique())
+            valores_selecionados = st.sidebar.multiselect(
+                label,
+                valores_unicos,
+                default=st.session_state.filters.get(coluna, []),
+                key=coluna
+            )
+            save_filter_state(coluna, valores_selecionados)
+            if valores_selecionados:
+                df = df[df[coluna].isin(valores_selecionados)]
+        else:
+            st.warning(f"Coluna '{coluna}' não encontrada no DataFrame.")
     return df
 
 # Função genérica para filtro por slider (intervalos numéricos)
@@ -190,7 +194,7 @@ def filter_ends_with(df):
     if selected_ends_with:
         i, j = selected_ends_with
         x = list(map(str, range(i, j + 1)))
-        df = df[df['preço'].astype(str).str.split('.').str[0].str[-1].isin(x)]
+        df = df[df['Qual_o_preco_deste_produto'].astype(str).str.split('.').str[0].str[-1].isin(x)]
     return df
 
 # Função para aplicar filtro de duplicidade

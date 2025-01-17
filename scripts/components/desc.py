@@ -42,20 +42,18 @@ def display_cr_details(cr_info):
     st.sidebar.divider()
     st.sidebar.markdown("### Informações da Coleta Regular")
     
-    cr_info['data'] = pd.to_datetime(cr_info['data'], errors='coerce')  # Converte a coluna para datetime
-    cr_info['data'] = cr_info['data'].strftime('%d/%m/%Y')  # Agora aplica o formato de data
+    cr_info['Data Hora Tarefa'] = pd.to_datetime(cr_info['Data Hora Tarefa'], errors='coerce')  # Converte a coluna para datetime
+    cr_info['Data Hora Tarefa'] = cr_info['Data Hora Tarefa'].strftime('%d/%m/%Y')  # Agora aplica o formato de data
     
     table_html = f"""
     <table style="width:100%; font-size: 18px; border-collapse: collapse;">
-        <tr><td style="font-weight: bold;">ID Tarefa:</td><td>{cr_info['tsk_id']}</td></tr>
-        <tr><td style="font-weight: bold;">Promotor:</td><td>{cr_info['nome_promotor']}</td></tr>
-        <tr><td style="font-weight: bold;">Supervisor:</td><td>{cr_info['e_supervisor']}</td></tr>
-        <tr><td style="font-weight: bold;">Bandeira:</td><td>{cr_info['bandeira']}</td></tr>
-        <tr><td style="font-weight: bold;">Data:</td><td>{cr_info['data']}</td></tr>
-        <tr><td style="font-weight: bold;">SKU:</td><td>{cr_info['sku']}</td></tr>
-        <tr><td style="font-weight: bold;">Marca:</td><td>{cr_info['marca']}</td></tr>
-        <tr><td style="font-weight: bold;">Tecnologia:</td><td>{cr_info['tecnologia']}</td></tr>
-        <tr><td style="font-weight: bold;">Preço:</td><td>R$ {cr_info['preço']}</td></tr>
+        <tr><td style="font-weight: bold;">ID Tarefa:</td><td>{cr_info['Tarefa ID para Integração']}</td></tr>
+        <tr><td style="font-weight: bold;">Data:</td><td>{cr_info['Data Hora Tarefa']}</td></tr>
+        <tr><td style="font-weight: bold;">Promotor:</td><td>{cr_info['Pessoa Nome']}</td></tr>
+        <tr><td style="font-weight: bold;">SKU:</td><td>{cr_info['Itens Descrição']}</td></tr>
+        <tr><td style="font-weight: bold;">Quantidade Exposta:</td><td>{cr_info['Quantas_pecas_do_produto_estao_expostas']}</td></tr>
+        <tr><td style="font-weight: bold;">Preço Moda:</td><td>{cr_info['PREÇO MODA']}</td></tr>
+        <tr><td style="font-weight: bold;">Preço:</td><td>R$ {cr_info['Qual_o_preco_deste_produto']}</td></tr>
     </table>
     """
     

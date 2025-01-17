@@ -26,7 +26,7 @@ if st.session_state.finished:
 # Verificar se há dados válidos e se o tipo de dado é 'CR'
 if (df is not None) and (st.session_state.type_data == 'CR'):
     # Filtro de Foto da Coleta Regular
-    links = ["foto_etiqueta"]
+    links = ["Tire_uma_foto_comprovando_o_preco_do_produto_etiqueta_ou_tela_do_sistema"]
     foto_coluna = st.sidebar.selectbox("Selecione uma Foto:", links)
     image_paths = df[foto_coluna].to_list()  # Filtra valores não nulos
 
