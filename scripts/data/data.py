@@ -47,7 +47,7 @@ def load_data(file):
     # Processamento de dados específicos
     if 'Foto_da_NF' in df.columns:
         df = process_nf_data(df)
-    elif 'Tire_uma_foto_comprovando_o_preco_do_produto_etiqueta_ou_tela_do_sistema' in df.columns:
+    elif 'LINK DA FOTO' in df.columns:
         df = process_cr_data(df)
 
     return df
@@ -93,9 +93,9 @@ def process_cr_data(df: pd.DataFrame):
     Processa dados específicos para o tipo CR (Correção).
     """
     # Calcular a moda dos preços por SKU
-    df['PREÇO MODA'] = df.groupby('Itens Descrição')['Qual_o_preco_deste_produto'].transform(lambda x: pd.Series.mode(x)[0])
+    df['PREÇO MODA'] = df.groupby('sku')['preço'].transform(lambda x: pd.Series.mode(x)[0])
     # Aplicar a função para gerar alertas de validação
-    df['ALERTAS DE VALIDAÇÃO'] = df.apply(lambda row: cr_val_alert(row['Qual_o_preco_deste_produto'], row['PREÇO MODA']), axis=1)
+    df['ALERTAS DE VALIDAÇÃO'] = df.apply(lambda row: cr_val_alert(row['preço'], row['PREÇO MODA']), axis=1)
     if 'CORREÇÃO' in df.columns:
         df['CORREÇÃO'] = df['CORREÇÃO'].astype(str)  # Convert to string
     if 'PREÇO MODA' in df.columns:
