@@ -1,43 +1,13 @@
 import streamlit as st
 
-from scripts.events import (
-    clear_filters, set_duplicates, set_image_index, 
-    set_no_link, set_wrong_date
-)
+from scripts.events import set_image_index
 from scripts.components.images import load_image, rotate_image
-
-def nf_explain():
-    """
-    Exibe as explicações sobre o formato das colunas da base SELLOUT para a validação de NFs.
-    """
-    st.divider()
-    st.subheader("Notas Fiscais")
-
-    with st.expander('Verifique o formato das colunas da base SELLOUT para a validação de NFs.'):
-        data_columns = [
-            'Local de Atendimento Descrição', 'CNPJ', 'Filial', 'Itens Descrição', 
-            'Preco_unitario_da_venda', 'Quantidade_venda', 'Data_da_venda', 
-            'Numero_da_NF', 'Foto_da_NF', 'Foto_da_NF_2', 'Foto_da_NF_3', 'STATUS'
-        ]
-        st.pills('Configuração (considere as letras maiúsculas e minúsculas e caracteres especiais)', data_columns, disabled=True)
-    st.divider()
-
-def extra_options():
-    """
-    Exibe as opções extras de filtros para Notas Fiscais.
-    """
-    with st.expander('Opções extras'):
-        if st.session_state.type_data == 'NF':
-            col1, col2, col3, col4 = st.columns(4, vertical_alignment='center')
-            with col1: nf_duplicates(st.session_state.data)
-            with col2: nf_wrong_date(st.session_state.data)
-            with col3: nf_no_media(st.session_state.data)
-            with col4: nf_clear_cache()
 
 def show_df():
     """
     Exibe os dados filtrados e originais.
     """
+
     st.subheader("Exibindo Dados Originais (Importados/Exportados)")
     st.dataframe(st.session_state.data)
 
@@ -83,47 +53,11 @@ def photo(current_image, image_paths):
     # Girar imagem se necessário
     rotate_image(foto_atual, foto_imagem)
 
-def display_note(df, column, image_index, current_status, options, key, change_func):
+def display_note(df, column, image_index, current_status, options, key, change_func, next_image=True):
     st.sidebar.selectbox(
         f"Alterar {column}:",
         options=options,
         key=key,
-        on_change=lambda: change_func(df, image_index, st.session_state[key]),
+        on_change=lambda: change_func(df, image_index, st.session_state[key], next_image),
         index=options.index(current_status) if current_status in options else 0,
     )
-
-def nf_duplicates(df):
-    """
-    Marca as duplicatas encontradas na base de dados.
-    """
-    if st.button("🚀 Duplicatas", disabled=False):
-        with st.spinner("Processando..."):
-            set_duplicates(df, 'Duplicidade')
-            st.success("Duplicidades Marcadas!")
-
-def nf_wrong_date(df):
-    """
-    Marca as datas divergentes.
-    """
-    if st.button('📅 Datas', disabled=False):
-        with st.spinner("Processando..."):
-            set_wrong_date(df, 'Data_da_venda')
-            st.success("Datas Divergentes Marcadas!")
-
-def nf_no_media(df):
-    """
-    Marca as notas fiscais sem link para imagem.
-    """
-    if st.button('🔗 NoMedia', disabled=False):
-        with st.spinner("Processando..."):
-            set_no_link(df)
-            st.success("NoMedia Marcados!")
-
-def nf_clear_cache():
-    """
-    Limpa os filtros e reseta as variáveis.
-    """
-    if st.button('♻️ Limpar Cache', disabled=False):
-        with st.spinner("Processando..."):
-            clear_filters()
-            st.success("Cache Liberado!")

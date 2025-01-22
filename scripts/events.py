@@ -20,18 +20,20 @@ def update_column(df, image_index, column, new_value):
     st.session_state.data.loc[temp_index, column] = new_value
     st.session_state.filtred_data.loc[temp_index, column] = new_value
 
-def set_status(df, image_index, new_status):
+def set_status(df, image_index, new_status, next_image=True):
     """Atualiza o STATUS da nota fiscal."""
     update_column(df, image_index, 'STATUS', new_status)
     update_column(df, image_index, 'Quem Validou?', st.session_state["name"])
-    set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'STATUS')
+    if next_image:
+        set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'STATUS')
 
-def set_erros(df, image_index, new_error):
+def set_erros(df, image_index, new_error, next_image=True):
     """Atualiza o ERRO da nota fiscal."""
     update_column(df, image_index, 'ERRO', new_error)
     # update_column(df, image_index, 'CORREÇÃO', st.session_state["correct_price"])
     update_column(df, image_index, 'Quem Validou?', st.session_state["name"])
-    set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'ERRO')
+    if next_image:
+        set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'ERRO')
 
 # Funções para condições específicas
 def set_duplicates(df, duplicate_column):

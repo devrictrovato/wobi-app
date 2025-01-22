@@ -1,16 +1,23 @@
-import warnings
-from pandas import DataFrame
-import streamlit as st
 import pandas as pd
+import streamlit as st
 
-# Ignorar warnings
-warnings.simplefilter(action="ignore")
+from scripts.utils import format_cnpj
 
-# Função para formatar CNPJ
-def format_cnpj(cnpj):
-    """Formatar CNPJ em um padrão legível."""
-    cnpj = str(cnpj)
-    return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
+def nf_explain():
+    """
+    Exibe as explicações sobre o formato das colunas da base SELLOUT para a validação de NFs.
+    """
+    st.divider()
+    st.subheader("Notas Fiscais")
+
+    with st.expander('Verifique o formato das colunas da base SELLOUT para a validação de NFs.'):
+        data_columns = [
+            'Local de Atendimento Descrição', 'CNPJ', 'Filial', 'Itens Descrição', 
+            'Preco_unitario_da_venda', 'Quantidade_venda', 'Data_da_venda', 
+            'Numero_da_NF', 'Foto_da_NF', 'Foto_da_NF_2', 'Foto_da_NF_3', 'STATUS'
+        ]
+        st.pills('Configuração (considere as letras maiúsculas e minúsculas e caracteres especiais)', data_columns, disabled=True)
+    st.divider()
 
 # Função para exibir detalhes da Nota Fiscal
 def display_nf_details(nf_info):
@@ -36,33 +43,6 @@ def display_nf_details(nf_info):
     
     st.sidebar.markdown(table_html, unsafe_allow_html=True)
 
-# Função para exibir detalhes da Coleta Regular
-def display_cr_details(cr_info):
-    """Exibir detalhes da coleta regular em formato de tabela estilizada."""
-    st.sidebar.divider()
-    st.sidebar.markdown("### Informações da Coleta Regular")
-    
-    cr_info['data'] = pd.to_datetime(cr_info['data'], errors='coerce')  # Converte a coluna para datetime
-    cr_info['data'] = cr_info['data'].strftime('%d/%m/%Y')  # Agora aplica o formato de data
-    
-    table_html = f"""
-    <table style="width:100%; font-size: 18px; border-collapse: collapse;">
-        <tr><td style="font-weight: bold;">ID Tarefa:</td><td>{cr_info['tsk_id']}</td></tr>
-        <tr><td style="font-weight: bold;">Promotor:</td><td>{cr_info['nome_promotor']}</td></tr>
-        <tr><td style="font-weight: bold;">Supervisor:</td><td>{cr_info['e_supervisor']}</td></tr>
-        <tr><td style="font-weight: bold;">Bandeira:</td><td>{cr_info['bandeira']}</td></tr>
-        <tr><td style="font-weight: bold;">Data:</td><td>{cr_info['data']}</td></tr>
-        <tr><td style="font-weight: bold;">SKU:</td><td>{cr_info['sku']}</td></tr>
-        <tr><td style="font-weight: bold;">Marca:</td><td>{cr_info['marca']}</td></tr>
-        <tr><td style="font-weight: bold;">Tecnologia:</td><td>{cr_info['tecnologia']}</td></tr>
-        <tr><td style="font-weight: bold;">Quantidade Exposta:</td><td>{cr_info['qtd_exposta']}</td></tr>
-        <tr><td style="font-weight: bold;">Preço moda:</td><td>{cr_info['PREÇO MODA']}</td></tr>
-        <tr><td style="font-weight: bold;">Preço:</td><td>R$ {cr_info['preço']}</td></tr>
-    </table>
-    """
-    
-    st.sidebar.markdown(table_html, unsafe_allow_html=True)
-
 # Função para exibir os SKUs e seus códigos
 def display_nf_ids():
     st.write('### Código de SKUs')
@@ -78,7 +58,7 @@ def display_nf_ids():
         '3438945', '3439020', '3439089', '3438880',
     ]
 
-    df_skus = DataFrame({'SKU': skus, 'Código do Produto': ids_crfo})
+    df_skus = pd.DataFrame({'SKU': skus, 'Código do Produto': ids_crfo})
     df_skus = df_skus.sort_values(by='SKU')
     
     # Converter DataFrame para HTML com estilo customizado

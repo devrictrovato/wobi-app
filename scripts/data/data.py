@@ -22,6 +22,22 @@ def session_vars():
     for key, default in session_defaults.items():
         st.session_state.setdefault(key, default)
 
+# Função para salvar os valores dos filtros no estado da sessão
+def save_filter_state(key, value):
+    st.session_state.filters[key] = value
+
+# Função para filtrar dados
+def filter_data(data, coluna_filtro, valor_filtro):
+    save_filter_state(coluna_filtro, valor_filtro)
+    return data[data[coluna_filtro].isin(valor_filtro)]
+
+# Função para definir o tipo de dado com base nas colunas do DataFrame
+def define_type_data(df):
+    if 'STATUS' in df.columns: 
+        st.session_state.type_data = 'NF'
+    elif 'ERRO' in df.columns: 
+        st.session_state.type_data = 'CR'
+
 @st.cache_data(max_entries=10, show_spinner=False)
 def load_data(file):
     """
@@ -47,7 +63,7 @@ def load_data(file):
     # Processamento de dados específicos
     if 'Foto_da_NF' in df.columns:
         df = process_nf_data(df)
-    elif 'LINK DA FOTO' in df.columns:
+    elif 'Tire_uma_foto_comprovando_o_preco_do_produto_etiqueta_ou_tela_do_sistema' in df.columns:
         df = process_cr_data(df)
 
     return df
@@ -93,9 +109,9 @@ def process_cr_data(df: pd.DataFrame):
     Processa dados específicos para o tipo CR (Correção).
     """
     # Calcular a moda dos preços por SKU
-    df['PREÇO MODA'] = df.groupby('sku')['preço'].transform(lambda x: pd.Series.mode(x)[0])
+    df['PREÇO MODA'] = df.groupby('Itens Descrição')['Qual_o_preco_deste_produto'].transform(lambda x: pd.Series.mode(x)[0])
+    df['ALERTAS DE VALIDAÇÃO'] = df.apply(lambda row: cr_val_alert(row['Qual_o_preco_deste_produto'], row['PREÇO MODA']), axis=1)
     # Aplicar a função para gerar alertas de validação
-    df['ALERTAS DE VALIDAÇÃO'] = df.apply(lambda row: cr_val_alert(row['preço'], row['PREÇO MODA']), axis=1)
     if 'CORREÇÃO' in df.columns:
         df['CORREÇÃO'] = df['CORREÇÃO'].astype(str)  # Convert to string
     if 'PREÇO MODA' in df.columns:

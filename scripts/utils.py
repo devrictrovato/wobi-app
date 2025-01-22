@@ -2,6 +2,12 @@ from io import BytesIO
 import pandas as pd
 import streamlit as st
 
+# Função para formatar CNPJ
+def format_cnpj(cnpj):
+    """Formatar CNPJ em um padrão legível."""
+    cnpj = str(cnpj)
+    return f"{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}"
+
 def exports():
     """
     Exibe as opções de exportação de dados.

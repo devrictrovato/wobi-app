@@ -4,9 +4,11 @@ import warnings
 
 # Importações locais
 from scripts.acess import login
-from scripts.components.builders import extra_options, nf_explain, show_df
-from scripts.data.data import load_data, session_vars
-from scripts.components.filters import define_type_data, display_filters
+from scripts.components.builders import show_df
+from scripts.components.extras import extra_options
+from scripts.components.nota_fiscal.nf_desc import nf_explain
+from scripts.data.data import define_type_data, load_data, session_vars
+from scripts.components.filters import display_filters
 from scripts.events import clear_cache, clear_filters
 from scripts.utils import exports, footer
 
@@ -53,10 +55,10 @@ if wobi_acess:
 
     # Verifica se há dados carregados
     if st.session_state.data is not None:
+        exports()  # Opções de exportação
         display_filters(st.session_state.data)
         extra_options()
         show_df()  # Exibe o DataFrame
-        exports()  # Opções de exportação
     else:
         st.info("Por favor, carregue um arquivo Excel para começar.")
 else:

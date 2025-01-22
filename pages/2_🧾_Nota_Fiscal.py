@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 
 from scripts.components.builders import display_note, image_index_input, photo
-from scripts.components.desc import display_nf_details, display_nf_ids
+from scripts.components.nota_fiscal.nf_desc import display_nf_details, display_nf_ids
 from scripts.data.data import session_vars
 from scripts.events import get_current_status, set_status
 from scripts.utils import footer
