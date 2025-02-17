@@ -36,25 +36,33 @@ def set_erros(df, image_index, new_error, next_image=True):
         set_next_image_index(df, image_index, 1 if image_index <= df.shape[0] - 1 else 0, 'ERRO')
 
 # Funções para condições específicas
-def set_duplicates(df, duplicate_column):
+def set_duplicates(duplicate_column):
     # Cria uma máscara para identificar duplicatas
-    duplicated_mask = df.duplicated(subset=[duplicate_column], keep='first')
+    duplicated_mask = st.session_state.data.duplicated(subset=[duplicate_column], keep='first')
 
     # Marca todas as ocorrências de duplicatas no DataFrame original
-    df.loc[duplicated_mask, 'STATUS'] = 'DUPLICIDADE'
+    st.session_state.data.loc[duplicated_mask, 'STATUS'] = 'DUPLICIDADE'
     st.session_state.data.loc[duplicated_mask, 'STATUS'] = 'DUPLICIDADE'
 
     # Retorna a última ocorrência de duplicatas
-    last_occurrences_mask = df.duplicated(subset=[duplicate_column], keep='last')
-    return df.loc[last_occurrences_mask]
+    last_occurrences_mask = st.session_state.data.duplicated(subset=[duplicate_column], keep='last')
+    return st.session_state.data.loc[last_occurrences_mask]
 
-def set_wrong_date(df, date_column):
+def set_wrong_date(date_column):
     """Marca registros com data divergente."""
-    df.loc[df[date_column] > df['Data Hora Tarefa'], 'STATUS'] = 'DATA DIVERGENTE'
+    st.session_state.data.loc[st.session_state.data[date_column] > st.session_state.data['Data Hora Tarefa'], 'STATUS'] = 'DATA DIVERGENTE'
 
-def set_no_link(df):
+def set_no_link():
     """Marca registros sem link de foto."""
-    df.loc[df['Foto_da_NF'] == 'http://get.umov.me/Logo/nomedia.png', 'STATUS'] = 'SEM LINK'
+    if st.session_state.type_data == 'NF':
+        st.session_state.data.loc[st.session_state.data['Foto_da_NF'] == 'http://get.umov.me/Logo/nomedia.png', 'STATUS'] = 'SEM LINK'
+    elif st.session_state.type_data == 'CR':
+        st.session_state.data.loc[st.session_state.data['Tire_uma_foto_comprovando_o_preco_do_produto_etiqueta_ou_tela_do_sistema'] == 'http://get.umov.me/Logo/nomedia.png', 'ERRO'] = 'SEM LINK'
+
+def set_qtd_alert(qtd_column):
+    """Marca registros com quantidade divergente."""
+    st.session_state.data.loc[st.session_state.data[qtd_column] <= 0, 'ERRO'] = 'ALERTA - NÚMERO DE EXPOSIÇÃO ZERADO'
+    st.session_state.data.loc[st.session_state.data[qtd_column] > 3, 'ERRO'] = 'ALERTA - PRODUTOS EXPOSTOS EM EXCESSO'
 
 # Função para atualizar o índice da imagem
 def set_image_index():

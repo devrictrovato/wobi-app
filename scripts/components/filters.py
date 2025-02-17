@@ -22,6 +22,7 @@ def filter_by_date(df, column):
     if column not in df.columns:
         st.warning(f'Coluna {column} não encontrada na base de dados.')
         return df
+    df[column] = pd.to_datetime(df[column])
 
     date_min = df[column].min()
     date_max = df[column].max()
@@ -35,7 +36,7 @@ def filter_by_date(df, column):
     )
     save_filter_state(f'{column}_inicio', data_inicio)
     save_filter_state(f'{column}_fim', data_fim)
-    return df[(df[column] >= pd.to_datetime(data_inicio)) & (df[column] <= pd.to_datetime(data_fim))]
+    return df[df[column].between(pd.to_datetime(data_inicio), pd.to_datetime(data_fim))]
 
 # Função genérica para filtro por múltiplos valores (multiselect)
 def filter_by_multiselect(df, columns):
@@ -93,8 +94,9 @@ def filter_by_month(df, column):
 
 # Função para aplicar filtro de pendentes
 def filter_pending(df):
-    if 'STATUS' not in df.columns:
-        st.warning(f'Coluna STATUS não encontrada na base de dados.')
+    col = 'STATUS' if 'STATUS' in df.columns else 'ERRO'
+    if col not in df.columns:
+        st.warning(f'Coluna {col} não encontrada na base de dados.')
         return df
 
     verificar_pendentes = st.sidebar.checkbox(
@@ -104,5 +106,5 @@ def filter_pending(df):
     )
     save_filter_state('verificar_pendentes', verificar_pendentes)
     if verificar_pendentes:
-        df = df[df['STATUS'] == 'PENDENTE']
+        df = df[df[col] == 'PENDENTE']
     return df

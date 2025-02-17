@@ -17,8 +17,8 @@ def filter_duplicates(df):
 
 # Função de filtro para Nota Fiscal
 def nf_filter(df):
-    df = filters.filter_by_month(df, 'Mes_da_venda')
     df = filters.filter_by_date(df, 'Data Hora Tarefa')
+    df = filters.filter_by_month(df, 'Mes_da_venda')
     df = filters.filter_by_multiselect(df, {
         'Região': 'Região',
         'Bandeira': 'Bandeira',

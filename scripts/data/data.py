@@ -109,6 +109,7 @@ def process_cr_data(df: pd.DataFrame):
     Processa dados específicos para o tipo CR (Correção).
     """
     # Calcular a moda dos preços por SKU
+    df['Data Hora Tarefa'] = pd.to_datetime(df['Data Hora Tarefa'], errors='coerce', format='%d/%m/%y')
     df['PREÇO MODA'] = df.groupby('Itens Descrição')['Qual_o_preco_deste_produto'].transform(lambda x: pd.Series.mode(x)[0])
     df['ALERTAS DE VALIDAÇÃO'] = df.apply(lambda row: cr_val_alert(row['Qual_o_preco_deste_produto'], row['PREÇO MODA']), axis=1)
     # Aplicar a função para gerar alertas de validação

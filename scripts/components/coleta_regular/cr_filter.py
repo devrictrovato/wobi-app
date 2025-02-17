@@ -50,14 +50,29 @@ def filter_ends_with(df):
         df = df[df['Qual_o_preco_deste_produto'].astype(str).str.split('.').str[0].str[-1].isin(x)]
     return df
 
+def filter_percentage(df, column, label):
+    selected_range = st.sidebar.slider(
+        label,
+        min_value=0,
+        max_value=100,
+        value=st.session_state.filters.get('amostra', 100),
+        key='amostra'
+    )
+    save_filter_state('amostra', selected_range)
+    if selected_range >= 100:
+        return df
+    df = df[df[column] != df['PREÇO MODA']]
+    return df.sample(frac=selected_range / 100, random_state=42)
+
 def cr_filter(df):
     df = filters.filter_by_date(df, 'Data Hora Tarefa')
     df = filters.filter_by_multiselect(df, {
         # 'Tarefa ID para Integração': 'Selecione os IDs',
-        'Local de Atendimento Descrição': 'Selecione as lojas',
-        'Pessoa Nome': 'Selecione os promotores',
-        'Itens Descrição': 'Selecione os SKUs',
         'Região': 'Selecione as regiões',
+        # 'Local de Atendimento Descrição': 'Selecione as lojas',
+        # 'Itens Descrição': 'Selecione os SKUs',
+        'Supervisor': 'Selecione os supervisores',
+        'Pessoa Nome': 'Selecione os promotores',
         'Marca': 'Selecione as marcas',
         'ALERTAS DE VALIDAÇÃO': 'Selecione os Alertas de Validação',
     })
@@ -65,6 +80,8 @@ def cr_filter(df):
     df = boxplot_df(df, ['Itens Descrição',], ['mean', 'std'])
     df = filter_range(df)
     df = filter_outliers(df, 'Qual_o_preco_deste_produto')
+    df = filters.filter_pending(df)
+    df = filter_percentage(df, 'Qual_o_preco_deste_produto', 'Amostra (%)')
     df = filters.filter_by_slider(df, 'Quantas_pecas_do_produto_estao_expostas', 'Selecione o intervalo de Quantidade Exposta')
     df = filter_ends_with(df)
     # df = filter_by_slider(df, 'qtd_exposta', 'Selecione o intervalo de Quantidade Exposta')

@@ -13,6 +13,7 @@ def display_cr_details(cr_info):
     table_html = f"""
     <table style="width:100%; font-size: 18px; border-collapse: collapse;">
         <tr><td style="font-weight: bold;">ID Tarefa:</td><td>{cr_info['Tarefa ID para Integração']}</td></tr>
+        <tr><td style="font-weight: bold;">Loja:</td><td>{cr_info['Local de Atendimento Descrição']}</td></tr>
         <tr><td style="font-weight: bold;">Promotor:</td><td>{cr_info['Pessoa Nome']}</td></tr>
         <tr><td style="font-weight: bold;">Data:</td><td>{cr_info['Data Hora Tarefa']}</td></tr>
         <tr><td style="font-weight: bold;">Preço moda:</td><td>{cr_info['PREÇO MODA']}</td></tr>

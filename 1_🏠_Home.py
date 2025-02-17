@@ -57,7 +57,7 @@ if wobi_acess:
     if st.session_state.data is not None:
         exports()  # Opções de exportação
         display_filters(st.session_state.data)
-        extra_options()
+        # extra_options()
         show_df()  # Exibe o DataFrame
     else:
         st.info("Por favor, carregue um arquivo Excel para começar.")
