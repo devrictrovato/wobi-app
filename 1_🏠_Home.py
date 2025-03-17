@@ -21,7 +21,6 @@ st.title("⚡ W.O.B.I ⚡")
 
 # Simula o login (essa linha pode ser modificada para implementar o login real)
 wobi_acess = True
-file_loaded = False
 # wobi_acess = login()
 
 # Verifica acesso do usuário
@@ -42,7 +41,6 @@ if wobi_acess:
             df = load_data(uploaded_file)
             st.session_state.data = df
             st.session_state.filtred_data = df.copy()
-            file_loaded = True
             
             # Processa os dados
             define_type_data(df)
